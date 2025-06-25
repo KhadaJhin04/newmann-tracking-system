@@ -1,0 +1,41 @@
+services:
+  # This is your main PHP web application
+  - type: web
+    name: newmann-app # You can change this name if you like
+    env: php
+    plan: free
+    # Tells Render to use the official image that includes Apache and Composer
+    dockerfilePath: ./render.dockerfile
+    # Set the web root to our public directory
+    # Note: The start command is now handled by the Dockerfile
+    
+    # Environment variables for the database connection
+    envVars:
+      - key: DB_HOST
+        fromService:
+          type: mysql
+          name: newmann-db # This MUST match the name you gave your Render database
+          property: host
+      - key: DB_USER
+        fromService:
+          type: mysql
+          name: newmann-db
+          property: user
+      - key: DB_PASSWORD
+        fromService:
+          type: mysql
+          name: newmann-db
+          property: password
+      - key: DB_NAME
+        fromService:
+          type: mysql
+          name: newmann-db
+          property: database
+
+  # This is your MySQL database
+  - type: mysql
+    name: newmann-db # Make sure this name matches what you created on Render
+    region: singapore # Or your chosen region
+    plan: free
+    # Specifies MySQL version, 8.0 is standard
+    version: '8.0'
