@@ -2,11 +2,11 @@ services:
   # This is your main PHP web application
   - type: web
     name: newmann-app
-    # We specify 'docker' as the environment to explicitly use our Dockerfile
-    env: docker
+    # Explicitly set the runtime to Docker to use our Dockerfile
+    runtime: docker
     plan: free
-    # We can remove the explicit path as Render finds it by default
-    # dockerfilePath: ./render.dockerfile
+    # The path to our Dockerfile
+    dockerfilePath: ./render.dockerfile
     
     # Environment variables for the database connection
     envVars:
