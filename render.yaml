@@ -1,16 +1,22 @@
 services:
   - type: web
     name: newmann-app
-    runtime: docker
-    dockerfilePath: ./render.dockerfile
+    env: docker
     plan: free
+    repo: https://github.com/KhadaJhin04/newmann-tracking-system # Optional but helps Render locate the repo
+    
+    # Specifies the Docker build context and Dockerfile path
+    dockerContext: .
+    dockerfilePath: ./render.dockerfile
+    
+    # Environment variables for the database connection
     envVars:
       - key: DATABASE_URL
         fromDatabase:
           name: newmann-db-pg
           property: connectionString
 
-  - type: pserv
+  - type: pserv 
     name: newmann-db-pg
-    region: singapore
     plan: free
+    region: singapore
