@@ -1,0 +1,23 @@
+{
+  "name": "Newmann Tracking System",
+  "short_name": "Newmann",
+  "description": "Logistics and Analytics Dashboard for Newmann 478",
+  "start_url": "/newmann_tracking/public/",
+  "scope": "/newmann_tracking/public/",
+  "display": "standalone",
+  "background_color": "#2c3e50",
+  "theme_color": "#2c3e50",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/newmann_tracking/public/assets/icons/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/newmann_tracking/public/assets/icons/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

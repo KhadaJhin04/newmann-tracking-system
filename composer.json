@@ -1,0 +1,19 @@
+{
+    "name": "newmann/tracking-system",
+    "description": "A logistics and delivery tracking system for Newmann 478 Trucking Services Corporation.",
+    "type": "project",
+    "require": {
+        "endroid/qr-code": "^4.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Your Name",
+            "email": "you@example.com"
+        }
+    ]
+}

@@ -1,0 +1,10 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # This condition is the fix: only apply the rule if the URL
+    # does not already start with /public/
+    RewriteCond %{REQUEST_URI} !^/newmann_tracking/public/
+
+    # Rewrite all other requests to the public/ directory
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
