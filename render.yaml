@@ -1,22 +1,16 @@
 services:
-  # This is your main PHP web application
   - type: web
     name: newmann-app
-    # Explicitly set the runtime to Docker to use our Dockerfile
     runtime: docker
-    plan: free
-    # The path to our Dockerfile
     dockerfilePath: ./render.dockerfile
-    
-    # Environment variables for the database connection
+    plan: free
     envVars:
       - key: DATABASE_URL
         fromDatabase:
           name: newmann-db-pg
           property: connectionString
 
-  # This is your PostgreSQL database
-  - type: pserv 
+  - type: pserv
     name: newmann-db-pg
-    region: singapore # Or your chosen region
+    region: singapore
     plan: free
