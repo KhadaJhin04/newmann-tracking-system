@@ -18,9 +18,8 @@ services:
           property: connectionString
 
   # This is your PostgreSQL database
-  - type: pserv # This is the correct type for PostgreSQL on Render
+  - type: pserv 
     name: newmann-db-pg
     region: singapore # Or your chosen region
     plan: free
-    # Specifies PostgreSQL version
-    version: "14"
+    # The 'version' key has been removed as it's not needed for the free plan
