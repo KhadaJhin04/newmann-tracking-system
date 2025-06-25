@@ -8,30 +8,19 @@ services:
     
     # Environment variables for the database connection
     envVars:
-      - key: DB_HOST
-        fromService:
-          type: p-mysql # This is the corrected type
-          name: newmann-db
-          property: host
-      - key: DB_USER
-        fromService:
-          type: p-mysql # This is the corrected type
-          name: newmann-db
-          property: user
-      - key: DB_PASSWORD
-        fromService:
-          type: p-mysql # This is the corrected type
-          name: newmann-db
-          property: password
-      - key: DB_NAME
-        fromService:
-          type: p-mysql # This is the corrected type
-          name: newmann-db
-          property: database
+      # This tells our PHP app to use postgres (pgsql) driver
+      - key: DB_CONNECTION
+        value: pgsql
+      # This provides the full connection string from the postgres database below
+      - key: DATABASE_URL
+        fromDatabase:
+          name: newmann-db-pg
+          property: connectionString
 
-  # This is your MySQL database
-  - type: p-mysql # <-- THIS IS THE CORRECTED LINE
-    name: newmann-db
+  # This is your PostgreSQL database
+  - type: pserv # This is the correct type for PostgreSQL on Render
+    name: newmann-db-pg
     region: singapore # Or your chosen region
     plan: free
-    version: '8.0'
+    # Specifies PostgreSQL version
+    version: "14"

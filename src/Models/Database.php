@@ -10,26 +10,39 @@ class Database
     private static $instance = null;
     private $conn;
 
-    // TODO: Update with your actual database credentials
-    private $host = 'localhost';
-    private $db_name = 'newmann_tracking_db';
-    private $username = 'root';
-    private $password = ''; // Your database password here
-
     private function __construct()
     {
         $this->conn = null;
-        try {
-            $this->conn = new PDO(
-                'mysql:host=' . $this->host . ';dbname=' . $this->db_name,
-                $this->username,
-                $this->password
-            );
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            // In a real app, you'd log this error, not echo it.
-            die('Connection Error: ' . $e->getMessage());
+        
+        // Check for Render's PostgreSQL connection string first
+        $render_db_url = getenv('DATABASE_URL');
+        if ($render_db_url) {
+            // We are on Render, connect to PostgreSQL
+            try {
+                $this->conn = new PDO($render_db_url);
+                $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            } catch (PDOException $e) {
+                die('Render DB Connection Error: ' . $e->getMessage());
+            }
+        } else {
+            // We are on a local machine, connect to MySQL
+            $host = 'localhost';
+            $db_name = 'newmann_tracking_db';
+            $username = 'root';
+            $password = '';
+
+            try {
+                $this->conn = new PDO(
+                    "mysql:host={$host};dbname={$db_name}",
+                    $username,
+                    $password
+                );
+                $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            } catch (PDOException $e) {
+                die('Local DB Connection Error: ' . $e->getMessage());
+            }
         }
     }
 
@@ -45,8 +58,4 @@ class Database
     {
         return $this->conn;
     }
-
-    // Prevent cloning and unserialization
-    private function __clone() {}
-    public function __wakeup() {}
 }
