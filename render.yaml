@@ -2,16 +2,12 @@ services:
   # This is your main PHP web application
   - type: web
     name: newmann-app
-    env: php
+    # The 'env: php' line has been removed to allow the Dockerfile to be used
     plan: free
     dockerfilePath: ./render.dockerfile
     
     # Environment variables for the database connection
     envVars:
-      # This tells our PHP app to use postgres (pgsql) driver
-      - key: DB_CONNECTION
-        value: pgsql
-      # This provides the full connection string from the postgres database below
       - key: DATABASE_URL
         fromDatabase:
           name: newmann-db-pg
@@ -22,4 +18,3 @@ services:
     name: newmann-db-pg
     region: singapore # Or your chosen region
     plan: free
-    # The 'version' key has been removed as it's not needed for the free plan
