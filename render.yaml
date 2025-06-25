@@ -1,22 +1,24 @@
+# This file follows the official Render Blueprint specification.
+# It defines a list of services (our PHP app) and a separate list of databases.
+
 services:
+  # This is the definition for our PHP web application
   - type: web
     name: newmann-app
-    env: docker
+    runtime: docker # Specifies to use our Dockerfile
     plan: free
-    repo: https://github.com/KhadaJhin04/newmann-tracking-system # Optional but helps Render locate the repo
-    
-    # Specifies the Docker build context and Dockerfile path
-    dockerContext: .
-    dockerfilePath: ./render.dockerfile
-    
+    # The repo and branch to use for deployment
+    repo: https://github.com/KhadaJhin04/newmann-tracking-system
+    branch: main
     # Environment variables for the database connection
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: newmann-db-pg
+          name: newmann-db-pg # The name of our database service below
           property: connectionString
 
-  - type: pserv 
-    name: newmann-db-pg
+databases:
+  # This is the definition for our PostgreSQL database
+  - name: newmann-db-pg
     plan: free
-    region: singapore
+    # region: singapore # This is optional, Render will pick one automatically
