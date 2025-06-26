@@ -14,15 +14,16 @@ RUN apt-get update && apt-get install -y \
 # Set the working directory
 WORKDIR /var/www/html
 
-# Copy all your application files into the server's working directory
-COPY . .
-
-# Run composer install to download your PHP dependencies
+# Copy composer files first to leverage Docker caching
+COPY composer.json composer.lock ./
 RUN composer install --no-interaction --no-dev --optimize-autoloader
 
+# Copy the rest of your application code
+COPY . .
+
 # --- THIS IS THE FIX ---
-# We are explicitly setting the Apache DocumentRoot in its configuration file.
-# This is more reliable than using an environment variable.
-RUN echo "<Directory /var/www/html/public>\n    AllowOverride All\n</Directory>" > /etc/apache2/conf-available/document-root.conf && \
+# Enable Apache's rewrite module and set the correct document root and permissions
+RUN a2enmod rewrite && \
+    echo "<Directory /var/www/html/public>\n    AllowOverride All\n</Directory>" > /etc/apache2/conf-available/document-root.conf && \
     sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf && \
     a2enconf document-root
