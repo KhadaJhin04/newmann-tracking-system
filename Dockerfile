@@ -1,9 +1,6 @@
 # Use the official public image for PHP with Apache from Docker Hub
 FROM php:8.2-apache
 
-# Set the document root for Apache to our 'public' directory
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-
 # Install necessary PHP extensions (like for PostgreSQL) and Composer
 RUN apt-get update && apt-get install -y \
     libpq-dev \
@@ -14,13 +11,18 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/* \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Copy composer files first to leverage Docker caching
+# Set the working directory
 WORKDIR /var/www/html
-COPY composer.json composer.lock ./
-RUN composer install --no-interaction --no-dev --optimize-autoloader
 
-# Copy the rest of your application code
+# Copy all your application files into the server's working directory
 COPY . .
 
-# Set correct permissions for storage and cache folders if they exist
-# RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Run composer install to download your PHP dependencies
+RUN composer install --no-interaction --no-dev --optimize-autoloader
+
+# --- THIS IS THE FIX ---
+# We are explicitly setting the Apache DocumentRoot in its configuration file.
+# This is more reliable than using an environment variable.
+RUN echo "<Directory /var/www/html/public>\n    AllowOverride All\n</Directory>" > /etc/apache2/conf-available/document-root.conf && \
+    sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf && \
+    a2enconf document-root
