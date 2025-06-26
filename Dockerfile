@@ -1,18 +1,17 @@
 # Use the official public image for PHP with Apache as a base
 FROM php:8.2-apache
 
-# Install all necessary system dependencies for PHP extensions and Composer
+# Install all necessary system dependencies first, including those for PHP extensions and Composer
 RUN apt-get update && apt-get install -y \
-    build-essential \
     libpq-dev \
     libzip-dev \
     unzip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Configure and install PHP extensions from source
+# Configure and install PHP extensions one by one for clarity and better error handling
 RUN docker-php-ext-configure pgsql --with-pgsql=/usr/local/pgsql
-RUN docker-php-ext-install -j$(nproc) pdo pdo_pgsql zip
+RUN docker-php-ext-install pdo pdo_pgsql zip
 
 # Install Composer globally
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -22,6 +21,7 @@ WORKDIR /var/www/html
 
 # Copy composer files first to leverage Docker caching
 COPY composer.json composer.lock ./
+# Run composer install to download your PHP dependencies
 RUN composer install --no-interaction --no-dev --optimize-autoloader
 
 # Copy the rest of your application code
